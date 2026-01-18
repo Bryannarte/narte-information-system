@@ -17,9 +17,14 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        // Clear existing users to avoid duplicates
+        User::query()->delete();
+
+        User::create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'bryan12345@gmail.com',
+            'password' => bcrypt('password'),
+            'email_verified_at' => now(),
         ]);
 
         $this->call([

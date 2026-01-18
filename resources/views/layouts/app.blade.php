@@ -167,6 +167,36 @@
                         </svg>
                         <span style="color: #ecfdf5 !important;">Add Book</span>
                     </a>
+                    @auth
+                        <a href="{{ route('profile') }}" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200" style="color: #475569 !important; text-decoration: none !important;" onmouseover="this.style.color='#6366f1'; this.style.backgroundColor='#eef2ff'" onmouseout="this.style.color='#475569'; this.style.backgroundColor='transparent'">
+                            <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: inherit;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            Profile
+                        </a>
+                        <form action="{{ route('logout') }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200" style="color: #dc2626 !important; text-decoration: none !important; background: transparent; border: none;" onmouseover="this.style.color='#b91c1c'; this.style.backgroundColor='#fef2f2'" onmouseout="this.style.color='#dc2626'; this.style.backgroundColor='transparent'">
+                                <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: inherit;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                </svg>
+                                Logout
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('register') }}" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200" style="color: #475569 !important; text-decoration: none !important;" onmouseover="this.style.color='#6366f1'; this.style.backgroundColor='#eef2ff'" onmouseout="this.style.color='#475569'; this.style.backgroundColor='transparent'">
+                            <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: inherit;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                            </svg>
+                            Register
+                        </a>
+                        <a href="{{ route('login') }}" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200" style="color: #475569 !important; text-decoration: none !important;" onmouseover="this.style.color='#6366f1'; this.style.backgroundColor='#eef2ff'" onmouseout="this.style.color='#475569'; this.style.backgroundColor='transparent'">
+                            <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: inherit;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                            </svg>
+                            Login
+                        </a>
+                    @endauth
                 </div>
             </div>
         </div>
