@@ -95,11 +95,54 @@
         animation: fadeInUp 0.6s ease-out forwards;
         opacity: 0;
     }
+    
+    /* Pagination Styles */
+    .pagination-container nav {
+        background: rgba(255,255,255,0.9) !important;
+        border-radius: 12px !important;
+        padding: 1rem !important;
+        box-shadow: 0 10px 25px rgba(16,24,40,0.08) !important;
+    }
+    
+    .pagination-container a, 
+    .pagination-container span {
+        color: #6366f1 !important;
+        background: rgba(255,255,255,0.8) !important;
+        border: 1px solid rgba(99,102,241,0.2) !important;
+        padding: 0.5rem 1rem !important;
+        margin: 0 0.25rem !important;
+        border-radius: 8px !important;
+        font-weight: 500 !important;
+        transition: all 0.2s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 2.5rem !important;
+        text-decoration: none !important;
+    }
+    
+    .pagination-container a:hover {
+        background: #6366f1 !important;
+        color: white !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px rgba(99,102,241,0.3) !important;
+    }
+    
+    .pagination-container [aria-current="page"] span {
+        background: #6366f1 !important;
+        color: white !important;
+        font-weight: 600 !important;
+    }
+    
+    .pagination-container [aria-disabled="true"] {
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+    }
 </style>
 <div class="px-4 sm:px-6 lg:px-8">
     <!-- Header Section -->
     <div class="mb-8">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between mb-6">
             <div>
                 <h1 class="text-4xl font-bold mb-2 flex items-center" style="color: #1e293b !important;">
                     <svg class="w-10 h-10 mr-3" style="color: #6366f1 !important;" fill="currentColor" viewBox="0 0 20 20">
@@ -109,6 +152,55 @@
                 </h1>
                 <p class="text-lg" style="color: #475569 !important;">Discover and manage your library books</p>
             </div>
+            <a href="{{ route('books.create') }}" class="inline-flex items-center px-6 py-3 rounded-xl text-sm font-semibold shadow-lg gradient-btn transition-all duration-200 hover:scale-105">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Add Book
+            </a>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 mb-6">
+            <form method="GET" action="{{ route('books.index') }}" class="flex gap-4">
+                <div class="flex-1">
+                    <label for="search" class="block text-sm font-medium mb-2" style="color: #374151;">Search Books</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5" style="color: #9ca3af;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </div>
+                        <input type="text" name="search" id="search" value="{{ request('search') }}" 
+                               placeholder="Search by title, author, category, publisher, or ISBN..." 
+                               class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                               style="background-color: #ffffff; color: #374151;">
+                    </div>
+                </div>
+                <div class="flex items-end gap-2">
+                    <button type="submit" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200 font-medium">
+                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        Search
+                    </button>
+                    @if(request('search'))
+                        <a href="{{ route('books.index') }}" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 font-medium">
+                            Clear
+                        </a>
+                    @endif
+                </div>
+            </form>
+            @if(request('search'))
+                <div class="mt-4 text-sm" style="color: #6b7280;">
+                    Showing results for: <strong>"{{ request('search') }}"</strong>
+                    @if($books->total() > 0)
+                        ({{ $books->total() }} book{{ $books->total() > 1 ? 's' : '' }} found)
+                    @else
+                        (No books found)
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
 
@@ -191,9 +283,45 @@
 
         <!-- Pagination -->
         @if($books->hasPages())
-            <div class="mt-8 flex justify-center">
+            <div class="mt-8 flex justify-center pagination-container">
                 <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-4">
-                    {{ $books->links() }}
+                    <!-- Custom Pagination with Page Numbers -->
+                    <div class="flex items-center justify-center space-x-2">
+                        {{-- Previous Page Link --}}
+                        @if ($books->onFirstPage())
+                            <span class="px-3 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-300 rounded-lg cursor-not-allowed">
+                                Previous
+                            </span>
+                        @else
+                            <a href="{{ $books->previousPageUrl() }}" class="px-3 py-2 text-sm font-medium text-indigo-600 bg-white border border-indigo-300 rounded-lg hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200">
+                                Previous
+                            </a>
+                        @endif
+
+                        {{-- Page Numbers --}}
+                        @foreach(range(1, $books->lastPage()) as $page)
+                            @if($page == $books->currentPage())
+                                <span class="px-3 py-2 text-sm font-bold text-white bg-indigo-600 border border-indigo-600 rounded-lg">
+                                    {{ $page }}
+                                </span>
+                            @else
+                                <a href="{{ $books->url($page) }}" class="px-3 py-2 text-sm font-medium text-indigo-600 bg-white border border-indigo-300 rounded-lg hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200">
+                                    {{ $page }}
+                                </a>
+                            @endif
+                        @endforeach
+
+                        {{-- Next Page Link --}}
+                        @if ($books->hasMorePages())
+                            <a href="{{ $books->nextPageUrl() }}" class="px-3 py-2 text-sm font-medium text-indigo-600 bg-white border border-indigo-300 rounded-lg hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200">
+                                Next
+                            </a>
+                        @else
+                            <span class="px-3 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-300 rounded-lg cursor-not-allowed">
+                                Next
+                            </span>
+                        @endif
+                    </div>
                 </div>
             </div>
         @endif
